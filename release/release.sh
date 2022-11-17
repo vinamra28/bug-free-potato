@@ -42,46 +42,50 @@ echo ${lasttag}|sed 's/\.[0-9]*$//'|grep -q ${RELEASE_VERSION%.*} && {
     exit 1
 }
 
-# git checkout ${DEFAULT_BRANCH}
-# git reset --hard ${UPSTREAM_REMOTE}/${DEFAULT_BRANCH}
-# git checkout -B release-${RELEASE_VERSION}  ${DEFAULT_BRANCH} >/dev/null
+git checkout ${DEFAULT_BRANCH}
+git reset --hard ${UPSTREAM_REMOTE}/${DEFAULT_BRANCH}
+git checkout -B release-${RELEASE_VERSION}  ${DEFAULT_BRANCH} >/dev/null
 
-# if [[ -n ${minor_version} ]];then
-#     git reset --hard ${lasttag} >/dev/null
+if [[ -n ${minor_version} ]];then
+    git reset --hard ${lasttag} >/dev/null
 
-#     if [[ -z ${COMMITS} ]];then
-#         echo "Showing commit between last minor tag '${lasttag} to '${DEFAULT_BRANCH}'"
-#         echo
-#         git log --reverse --no-merges --pretty=format:"%C(bold cyan)%h%Creset | %cd | %s | %ae" ${DEFAULT_BRANCH} --since "$(git log --pretty=format:%cd -1 ${lasttag})"
-#         echo
-#         read -e -p "Pick a list of ordered commits to cherry-pick space separated (* mean all of them): " COMMITS
-#     fi
-#     [[ -z ${COMMITS} ]] && { echo "no commits picked"; exit 1;}
-#     if [[ ${COMMITS} == "*" ]];then
-#         COMMITS=$(git log --reverse --no-merges --pretty=format:"%h" ${DEFAULT_BRANCH} \
-#                       --since "$(git log --pretty=format:%cd -1 ${lasttag})")
-#     fi
-#     for commit in ${COMMITS};do
-#         git branch --contains ${commit} >/dev/null || { echo "Invalid commit ${commit}" ; exit 1;}
-#         echo "Cherry-picking commit: ${commit}"
-#         git cherry-pick ${commit} >/dev/null
-#     done
-# else
-#     echo "Major release ${RELEASE_VERSION%.*} detected: picking up ${UPSTREAM_REMOTE}/${DEFAULT_BRANCH}"
-#     git reset --hard ${UPSTREAM_REMOTE}/${DEFAULT_BRANCH}
-# fi
+    if [[ -z ${COMMITS} ]];then
+        echo "Showing commit between last minor tag '${lasttag} to '${DEFAULT_BRANCH}'"
+        echo
+        git log --reverse --no-merges --pretty=format:"%C(bold cyan)%h%Creset | %cd | %s | %ae" ${DEFAULT_BRANCH} --since "$(git log --pretty=format:%cd -1 ${lasttag})"
+        echo
+        read -e -p "Pick a list of ordered commits to cherry-pick space separated (* mean all of them): " COMMITS
+    fi
+    [[ -z ${COMMITS} ]] && { echo "no commits picked"; exit 1;}
+    if [[ ${COMMITS} == "*" ]];then
+        COMMITS=$(git log --reverse --no-merges --pretty=format:"%h" ${DEFAULT_BRANCH} \
+                      --since "$(git log --pretty=format:%cd -1 ${lasttag})")
+    fi
+    for commit in ${COMMITS};do
+        git branch --contains ${commit} >/dev/null || { echo "Invalid commit ${commit}" ; exit 1;}
+        echo "Cherry-picking commit: ${commit}"
+        git cherry-pick ${commit} >/dev/null
+    done
+else
+    echo "Major release ${RELEASE_VERSION%.*} detected: picking up ${UPSTREAM_REMOTE}/${DEFAULT_BRANCH}"
+    git reset --hard ${UPSTREAM_REMOTE}/${DEFAULT_BRANCH}
+fi
 
-# COMMITS=$(git log --reverse --no-merges \
-#               --pretty=format:'%H' ${DEFAULT_BRANCH} \
-#               --since "$(git log --pretty=format:%cd -1 ${lasttag})")
+COMMITS=$(git log --reverse --no-merges \
+              --pretty=format:'%H' ${DEFAULT_BRANCH} \
+              --since "$(git log --pretty=format:%cd -1 ${lasttag})")
 
-# changelog=""
-# for c in ${COMMITS};do
-#     pr=$(curl -s "https://api.github.com/search/issues?q=${c}" |jq -r '.items[0].html_url')
-#     pr=$(echo ${pr}|sed 's,https://github.com/vinamra28/bug-free-potato/pull/,vinamra28/bug-free-potato#,')
-#     changelog+="${pr} | $(git log -1 --date=format:'%Y/%m/%d-%H:%M' --pretty=format:'[%an] %s | %cd' ${c})
-# "
-# done
+echo ${COMMITS}
+
+changelog=""
+for c in ${COMMITS};do
+    pr=$(curl -s "https://api.github.com/search/issues?q=${c}" |jq -r '.items[0].html_url')
+    pr=$(echo ${pr}|sed 's,https://github.com/vinamra28/bug-free-potato/pull/,vinamra28/bug-free-potato#,')
+    changelog+="${pr} | $(git log -1 --date=format:'%Y/%m/%d-%H:%M' --pretty=format:'[%an] %s | %cd' ${c})
+"
+done
+
+echo ${changelog}
 
 # # Add our VERSION so Makefile will pick it up when compiling
 # echo ${RELEASE_VERSION#v} > VERSION
