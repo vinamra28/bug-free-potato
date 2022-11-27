@@ -23,12 +23,11 @@ done
 
 [[ -z ${RELEASE_ENV} ]] && {
     read -e -p "Enter a target release env (uat or release): " RELEASE_ENV
-    [[ -z ${RELEASE_ENV} ]] && { echo "no target env, setting the default to uat"; RELEASE_ENV=uat ;}
+    [[ -z ${RELEASE_ENV} ]] && { echo "no target env, setting the default to release"; RELEASE_ENV=release ;}
 }
 
 [[ ${RELEASE_VERSION} =~ v[1-9]+\.[0-9]*\.[0-9]+ ]] || { echo "invalid version provided, need to match v\d+\.\d+\.\d+"; exit 1 ;}
 git fetch -a --tags ${UPSTREAM_REMOTE} >/dev/null
-# lasttag=$(git describe --tags `git rev-list --tags --max-count=1`)
 lasttag=$(git tag --list --sort=-version:refname "v[1-9].[0-9].[0-9]" | head -n 1)
 echo ${lasttag}|sed 's/\.[0-9]*$//'|grep -q ${RELEASE_VERSION%.*} && {
     echo "Minor version of ${RELEASE_VERSION%.*} detected, previous ${lasttag}"; minor_version=true ;
