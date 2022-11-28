@@ -93,10 +93,14 @@ The release also consists a fix the display merchant information accurately in t
 
 ### Use dates for versioning
 
-We can tag the releases uniquely using the following pattern: `v<nth release>.<month>.<year>`.
-Example: We want to cut a release in the month of 11/2022 and this will be the first release
-of that particular month so the tag would look like `v1.11.2022` and this will go on like
-`v2.11.2022`, `v1.12.2022` and so on.
+We can tag the releases uniquely using the following pattern:
+
+- `v<nth release>.<month>.<year>`
+  Example: We want to cut a release in the month of 11/2022 and this will be the first release
+  of that particular month so the tag would look like `v1.11.2022` and this will go on like
+  `v2.11.2022`, `v1.12.2022` and so on.
+
+- `release-yyyy-MM-dd`. This currently being followed by [aws java sdk][aws java sdk]
 
 #### Advantages
 
@@ -107,8 +111,6 @@ of that particular month so the tag would look like `v1.11.2022` and this will g
 
 - It will be difficult to differentiate between major, minor and patch releases
 - Making a minor or patch release for a particular major release will be difficult
-
-[semver]: https://semver.org/
 
 ## Questions
 
@@ -122,3 +124,6 @@ of that particular month so the tag would look like `v1.11.2022` and this will g
 
 - What should be the cadence?
 - Should we have release managers along with rotations?
+
+[semver]: https://semver.org/
+[aws java sdk]: https://github.com/aws/aws-sdk-go-v2
