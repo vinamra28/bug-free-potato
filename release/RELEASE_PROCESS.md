@@ -40,6 +40,7 @@ and all major releases should start from v1.x.x and so on. All development relea
 should follow v0.x.x.
 
 > **Note 1**: No need to cut a separate branch for development releases
+
 > **Note 2**: Development releases should always follow v0.x.y so that they don't
 > clash with any major releases
 
