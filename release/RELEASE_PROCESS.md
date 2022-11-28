@@ -9,6 +9,7 @@
 - [Alternatives](#alternatives)
   - [Use dates as versioning](#use-dates-for-versioning)
 - [Questions](#questions)
+- [Future Work](#future-work)
 
 ## Summary
 
@@ -125,5 +126,10 @@ We can tag the releases uniquely using the following pattern:
 - What should be the cadence?
 - Should we have release managers along with rotations?
 
+## Future Work
+
+In future we can think of evaluating [jreleaser][jreleaser] for releasing the projects.
+
 [semver]: https://semver.org/
 [aws java sdk]: https://github.com/aws/aws-sdk-go-v2
+[jreleaser]: https://jreleaser.org/#
