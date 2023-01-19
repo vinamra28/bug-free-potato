@@ -10,5 +10,6 @@ Make sure you don't commit secrets.
 
 This is new project.
 
+Feature branch changes here.
 
 bug free potato.
