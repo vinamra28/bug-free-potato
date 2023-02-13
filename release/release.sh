@@ -100,6 +100,9 @@ git push --force ${PUSH_REMOTE} ${RELEASE_ENV}-${RELEASE_VERSION}
 ## Checkout back to default branch to avoid any accidents with release branch
 git checkout ${DEFAULT_BRANCH}
 
+echo -n "# Git Changelog 🗒" >> ./release/changelog.md
+echo -n $changelog >> ./release/changelog.md
+
 gh release create ${RELEASE_VERSION} -F ./release/changelog.md
 
 echo -n "" > ./release/changelog.md
