@@ -86,10 +86,14 @@ done
 
 echo ${changelog}
 
+echo "" >> ./release/changelog.md
+echo "# Git Changelog 🗒" >> ./release/changelog.md
+echo "$changelog" >> ./release/changelog.md
+
 # Add our VERSION so Makefile will pick it up when compiling
 echo ${RELEASE_VERSION#v} > VERSION
-git add VERSION
-git commit -sm "New version ${RELEASE_VERSION}" -m "${changelog}" VERSION
+git add VERSION release/changelog.md
+git commit -sm "New version ${RELEASE_VERSION}" -m "${changelog}" VERSION release/changelog.md
 git tag --sign -m \
     "New version ${RELEASE_VERSION}" \
     -m "${changelog}" --force ${RELEASE_VERSION}
@@ -97,12 +101,9 @@ git tag --sign -m \
 git push --force ${PUSH_REMOTE} ${RELEASE_VERSION}
 git push --force ${PUSH_REMOTE} ${RELEASE_ENV}-${RELEASE_VERSION}
 
+gh release create ${RELEASE_VERSION} -F ./release/changelog.md
+
 ## Checkout back to default branch to avoid any accidents with release branch
 git checkout ${DEFAULT_BRANCH}
-
-echo -n "# Git Changelog 🗒" >> ./release/changelog.md
-echo -n $changelog >> ./release/changelog.md
-
-gh release create ${RELEASE_VERSION} -F ./release/changelog.md
 
 echo -n "" > ./release/changelog.md
