@@ -84,7 +84,7 @@ for c in ${COMMITS};do
 "
 done
 
-echo ${changelog}
+echo "${changelog}"
 
 echo "" >> ./release/changelog.md
 echo "# Git Changelog 🗒" >> ./release/changelog.md
