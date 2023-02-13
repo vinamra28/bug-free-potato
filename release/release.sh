@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 RELEASE_VERSION="${1}"
 COMMITS="${2}"
-RELEASE_ENV="${3}"
+RELEASE_ENV="release"
 
 UPSTREAM_REMOTE=origin
 DEFAULT_BRANCH="main"
 PUSH_REMOTE="${PUSH_REMOTE:-${UPSTREAM_REMOTE}}" # export PUSH_REMOTE to your own for testing
 
-BINARIES="git"
+BINARIES="git gh"
 
 set -e
 
@@ -21,10 +21,10 @@ done
     [[ -z ${RELEASE_VERSION} ]] && { echo "no target release"; exit 1 ;}
 }
 
-[[ -z ${RELEASE_ENV} ]] && {
-    read -e -p "Enter a target release env (uat or release): " RELEASE_ENV
-    [[ -z ${RELEASE_ENV} ]] && { echo "no target env, setting the default to release"; RELEASE_ENV=release ;}
-}
+# [[ -z ${RELEASE_ENV} ]] && {
+#     read -e -p "Enter a target release env (uat or release): " RELEASE_ENV
+#     [[ -z ${RELEASE_ENV} ]] && { echo "no target env, setting the default to release"; RELEASE_ENV=release ;}
+# }
 
 [[ ${RELEASE_VERSION} =~ v[1-9]+\.[0-9]*\.[0-9]+ ]] || { echo "invalid version provided, need to match v\d+\.\d+\.\d+"; exit 1 ;}
 git fetch -a --tags ${UPSTREAM_REMOTE} >/dev/null
@@ -86,16 +86,20 @@ done
 
 echo ${changelog}
 
-# # Add our VERSION so Makefile will pick it up when compiling
-# echo ${RELEASE_VERSION#v} > VERSION
-# git add VERSION
-# git commit -sm "New version ${RELEASE_VERSION}" -m "${changelog}" VERSION
-# git tag --sign -m \
-#     "New version ${RELEASE_VERSION}" \
-#     -m "${changelog}" --force ${RELEASE_VERSION}
+# Add our VERSION so Makefile will pick it up when compiling
+echo ${RELEASE_VERSION#v} > VERSION
+git add VERSION
+git commit -sm "New version ${RELEASE_VERSION}" -m "${changelog}" VERSION
+git tag --sign -m \
+    "New version ${RELEASE_VERSION}" \
+    -m "${changelog}" --force ${RELEASE_VERSION}
 
-# git push --force ${PUSH_REMOTE} ${RELEASE_VERSION}
-# git push --force ${PUSH_REMOTE} ${RELEASE_ENV}-${RELEASE_VERSION}
+git push --force ${PUSH_REMOTE} ${RELEASE_VERSION}
+git push --force ${PUSH_REMOTE} ${RELEASE_ENV}-${RELEASE_VERSION}
 
-# ## Checkout back to default branch to avoid any accidents with release branch
-# git checkout ${DEFAULT_BRANCH}
+## Checkout back to default branch to avoid any accidents with release branch
+git checkout ${DEFAULT_BRANCH}
+
+gh release create ${RELEASE_VERSION} -F $pwd/release/changelog.md
+
+echo -n "" > $pwd/release/changelog.md
