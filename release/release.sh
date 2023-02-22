@@ -96,10 +96,6 @@ else
     fi
 fi
 
-echo $LAST_TAG
-
-exit 0
-
 # lasttag=$(git tag --list --sort=-version:refname "v[1-9].[0-9].[0-9]" | head -n 1)
 # echo ${lasttag} | sed 's/\.[0-9]*$//' | grep -q ${RELEASE_VERSION%.*} && {
 #     echo "Minor version of ${RELEASE_VERSION%.*} detected, previous ${lasttag}"
