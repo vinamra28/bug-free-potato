@@ -78,10 +78,27 @@ done
     }
 }
 
-LAST_TAG=${LAST_TAG}-${BANK}
 RELEASE_VERSION=${RELEASE_VERSION}-${BANK}
 
 git fetch -a --tags ${UPSTREAM_REMOTE} >/dev/null
+
+if git rev-parse -q --verify "refs/tags/${LAST_TAG}-${BANK}" >/dev/null; then
+    echo "last tag ${LAST_TAG}-${BANK} found, using this..."
+    LAST_TAG=${LAST_TAG}-${BANK}
+else
+    echo "tag with bank name not found, trying to check for ${LAST_TAG}"
+    if git rev-parse -q --verify "refs/tags/${LAST_TAG}" >/dev/null; then
+        echo "tag ${LAST_TAG} found"
+        LAST_TAG=${LAST_TAG}
+    else
+        echo "no last tag found, please provide a valid last tag, exiting..."
+        exit 1
+    fi
+fi
+
+echo $LAST_TAG
+
+exit 0
 
 # lasttag=$(git tag --list --sort=-version:refname "v[1-9].[0-9].[0-9]" | head -n 1)
 # echo ${lasttag} | sed 's/\.[0-9]*$//' | grep -q ${RELEASE_VERSION%.*} && {
