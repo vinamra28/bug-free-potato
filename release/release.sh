@@ -17,19 +17,15 @@ function validateBank() {
     case "${1}" in
     "equitas")
         echo "publishing release for equitas bank"
-        exit 0
         ;;
     "kvb")
         echo "publishing release for kvb bank"
-        exit 0
         ;;
     "canara")
         echo "publishing release for canara bank"
-        exit 0
         ;;
     "axis")
         echo "publishing release for axis bank"
-        exit 0
         ;;
     *)
         echo "invalid bank name"
