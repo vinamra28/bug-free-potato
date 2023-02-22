@@ -1,3 +1,7 @@
-## v4.0.0
+## v5.0.0
 
-This is to test the changelog upload using github CLI
+- Release Script modified
+    - Take bank name from input
+    - Create tag in format v1.0.0-axis
+
+- Add file test.sh which is a demo file
