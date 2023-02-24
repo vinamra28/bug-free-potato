@@ -82,7 +82,7 @@ done
 [[ -z ${DEFAULT_BRANCH} ]] && {
     read -e -p "Enter the branch name from which release needs to be cut: " DEFAULT_BRANCH
     [[ -z ${DEFAULT_BRANCH} ]] && {
-        echo "default branch name not provided, using master as base branch"
+        echo "default branch name not provided, using main as base branch"
         DEFAULT_BRANCH="main" # change here for issuer transaction projects
     }
 }
@@ -196,6 +196,6 @@ echo "[Next Release version placeholder]" >./release/changelog.md
 git add ./release/changelog.md
 git commit -sm "Reset Changelog with Placeholder" ./release/changelog.md
 
-git push ${PUSH_REMOTE} post-${RELEASE_VERSION#v}
+git push ${PUSH_REMOTE} post-${RELEASE_VERSION}
 
 gh pr create --title "Reset Changelog with Placeholder" --body ""
