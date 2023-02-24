@@ -199,3 +199,5 @@ git commit -sm "Reset Changelog with Placeholder" ./release/changelog.md
 git push ${PUSH_REMOTE} post-${RELEASE_VERSION}
 
 gh pr create --title "Reset Changelog with Placeholder" --body ""
+
+git checkout ${DEFAULT_BRANCH}
