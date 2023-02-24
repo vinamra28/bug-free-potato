@@ -6,7 +6,8 @@ BANK=""
 LAST_TAG=""
 
 UPSTREAM_REMOTE=origin
-DEFAULT_BRANCH="main"
+# DEFAULT_BRANCH=${DEFAULT_BRANCH:-main} # master for issuer tokenization projects
+DEFAULT_BRANCH=""
 PUSH_REMOTE="${PUSH_REMOTE:-${UPSTREAM_REMOTE}}" # export PUSH_REMOTE to your own for testing
 
 BINARIES="git gh"
@@ -75,6 +76,14 @@ done
     [[ $? -eq 0 ]] || {
         echo "invalid bank name"
         exit 1
+    }
+}
+
+[[ -z ${DEFAULT_BRANCH} ]] && {
+    read -e -p "Enter the branch name from which release needs to be cut: " DEFAULT_BRANCH
+    [[ -z ${DEFAULT_BRANCH} ]] && {
+        echo "default branch name not provided, using master as base branch"
+        DEFAULT_BRANCH="main" # change here for issuer transaction projects
     }
 }
 
@@ -180,4 +189,13 @@ gh release create ${RELEASE_VERSION} -F ./release/changelog.md
 ## Checkout back to default branch to avoid any accidents with release branch
 git checkout ${DEFAULT_BRANCH}
 
-echo -n "" >./release/changelog.md
+git checkout -b post-${RELEASE_VERSION}
+
+echo "[Next Release version placeholder]" >./release/changelog.md
+
+git add ./release/changelog.md
+git commit -sm "Reset Changelog with Placeholder" ./release/changelog.md
+
+git push ${PUSH_REMOTE} post-${RELEASE_VERSION#v}
+
+gh pr create --title "Reset Changelog with Placeholder" --body ""
