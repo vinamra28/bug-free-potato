@@ -48,7 +48,7 @@ done
         echo "no target release"
         exit 1
     }
-    [[ ${RELEASE_VERSION} =~ v[1-9]+\.[0-9]*\.[0-9]+ ]] || {
+    [[ ${RELEASE_VERSION} =~ v[1-9]+[0-9]*\.[0-9]*\.[0-9]+ ]] || {
         echo "invalid version provided, need to match v\d+\.\d+\.\d+"
         exit 1
     }
@@ -60,7 +60,7 @@ done
         echo "need last tag for git diff"
         exit 1
     }
-    [[ ${LAST_TAG} =~ v[1-9]+\.[0-9]*\.[0-9]+ ]] || {
+    [[ ${LAST_TAG} =~ v[1-9]+[0-9]*\.[0-9]*\.[0-9]+ ]] || {
         echo "invalid version provided, need to match v\d+\.\d+\.\d+"
         exit 1
     }
